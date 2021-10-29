@@ -2,12 +2,12 @@ from typing import Union
 # SMTP
 from smtplib import SMTP
 # Message utils
-from infrastructure.email_manager.EmailMessage import EmailAttachment, EmailMessageFactory
+from .EmailMessage import EmailAttachment, EmailMessageFactory
 
 
 class EmailManager:
     """
-    @version 1.0.0
+    @version 1.0.1
 
     Class that provides email functionality, by encapsulating all the process and exposing only the 
     facade and setters we are able to hide the underlying complexity of this process, making it a lot

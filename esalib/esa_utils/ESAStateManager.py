@@ -1,11 +1,11 @@
 
-# ESA SSH agent
-from esa_utils.ESAFileManager import ESAFileManager
-from esa_utils.ESASSHAgent import ESASSHAgent
+# ESA utils
+from .ESASSHAgent import ESASSHAgent
+from .ESAFileManager import ESAFileManager
 # Validator
-from esa_utils.ESAVersionValidator import ESAVersionValidator
+from .ESAVersionValidator import ESAVersionValidator
 # Utils
-from utils.logger.Logger import Logger
+from ..utils.logger.Logger import Logger
 
 
 class ESAStateManager:

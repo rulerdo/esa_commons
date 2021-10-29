@@ -1,12 +1,12 @@
 # SSH
-from infrastructure.ssh_manager.SSHConnection import SSHConnection
-from infrastructure.ssh_manager.strategy.ParamikoStrategy import ParamikoStrategy
+from .SSHConnection import SSHConnection
+from .strategy.ParamikoStrategy import ParamikoStrategy
 # Strategy contract
-from infrastructure.ssh_manager.strategy.SSHStrategy import SSHStrategy
+from .strategy.SSHStrategy import SSHStrategy
 
 class SSHManager:
     """
-    @version 3.4.0
+    @version 3.4.1
     
     Class to establish an SSH connection with a device implementing the Singleton pattern, to keep a single 
     instance of the connection through all the process. 

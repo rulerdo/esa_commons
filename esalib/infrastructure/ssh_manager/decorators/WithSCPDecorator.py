@@ -1,11 +1,11 @@
 from scp import SCPClient
 # File operations contract
-from infrastructure.ssh_manager.decorators.FileOperationsDecorator import FileOperationsDecorator
+from ..decorators.FileOperationsDecorator import FileOperationsDecorator
 
 
 class WithSCPDecorator(FileOperationsDecorator):
     """
-    @version 3.5.2
+    @version 3.5.3
 
     SSH strategy, implementing netmiko library for multi-vendor support with SCP functionality (via a decorator).
     It receives an options list with the following shape:

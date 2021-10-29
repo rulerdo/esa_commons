@@ -5,11 +5,11 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 # Utils
-from utils.files.FileManager import FileManager
+from ...utils.files.FileManager import FileManager
 
 class EmailMessageFactory:
     """
-    @version 1.0.0
+    @version 1.0.1
 
     Class that implements the factory design pattern, to create the appropiate instance of email.mime
     based on the provided message type.

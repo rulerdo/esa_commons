@@ -1,16 +1,15 @@
-import time
 # SSH
-from esa_utils.ESAParameters import ESASSHParameters
-from infrastructure.ssh_manager.SSHManager import SSHManager
+from .ESAParameters import ESASSHParameters
+from ..infrastructure.ssh_manager.SSHManager import SSHManager
 # SCP file transfer
-from infrastructure.ssh_manager.SCPFileTransfer import SCPFileTransfer
+from ..infrastructure.ssh_manager.SCPFileTransfer import SCPFileTransfer
 # Utils
-from utils.logger.Logger import Logger
+from ..utils.logger.Logger import Logger
 
 
 class ESASSHAgent:
     """
-    @version 3.6.0
+    @version 3.6.1
 
     SSH agent for the ESA. It provides a predictable mechanism to initialize and keep a SSH connection.
     File transfer functionalities via SCP are also available.

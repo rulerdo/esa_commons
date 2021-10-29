@@ -1,12 +1,12 @@
 # ESA utils
-from esa_utils.ESASSHAgent import ESASSHAgent
+from .ESASSHAgent import ESASSHAgent
 # Utils
-from utils.files.FileManager import FileManager
+from ..utils.files.FileManager import FileManager
 
 
 class ESAFileManager:
     """
-    @version 1.2.0
+    @version 1.2.1
 
     Class to get files from ESA and retrieve values from them. It is useful to get relevant values for 
     the state. 

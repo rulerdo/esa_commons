@@ -24,6 +24,7 @@ class Logger():
     # Output log file name
     output_log_file_name = 'session.log'
 
+    @staticmethod
     def initialize(
         level = logging.WARNING,
         verbose = False
@@ -53,6 +54,7 @@ class Logger():
         # Finally, we set the loger instance
         Logger.instance = logging.getLogger()
 
+    @staticmethod
     def set_level(level: int):
         """
         @param {int} level Logger level to set.
@@ -63,55 +65,72 @@ class Logger():
             raise Exception('Logger not initialized')
         Logger.instance.setLevel(level)
 
+    @staticmethod
+    def get_instance():
+        """
+        Singleton method to get the logger instance. It allows safe operation if the Logger is
+        not initialized manually by the user.
+        """
+        if not Logger.instance:
+            Logger.initialize()
+        return Logger.instance
+
+    @staticmethod
     def info(message: str):
         """
         @param {str} message The message to log.
 
         Logs a message at INFO level.
         """
-        Logger.instance.info(message)
+        Logger.get_instance().info(message)
 
+    @staticmethod
     def debug(message: str, *args, **kwargs):
         """
         @param {str} message The message to log.
         
         Logs a message at DEBUG level.
         """
-        Logger.instance.debug(message, *args, **kwargs)
+        Logger.get_instance().debug(message, *args, **kwargs)
     
+    @staticmethod
     def error(message: str, *args, **kwargs):
         """
         @param {str} message The message to log.
         
         Logs a message at ERROR level.
         """
-        Logger.instance.error(message, *args, **kwargs)
+        Logger.get_instance().error(message, *args, **kwargs)
 
+    @staticmethod
     def warning(message: str, *args, **kwargs):
         """
         @param {str} message The message to log.
         
         Logs a message at WARNING level.
         """
-        Logger.instance.warning(message, *args, **kwargs)
+        Logger.get_instance().warning(message, *args, **kwargs)
 
+    @staticmethod
     def critical(message: str, *args, **kwargs):
         """
         @param {str} message The message to log.
         
         Logs a message at CRITICAL level.
         """
-        Logger.instance.critical(message, *args, **kwargs)
+        Logger.get_instance().critical(message, *args, **kwargs)
 
+    @staticmethod
     def exception(message: str, *args, **kwargs):
         """
         @param {str} message The message to log.
         
         Logs an exception (including the stack trace).
         """
-        Logger.instance.exception(message, *args, **kwargs)
+        Logger.get_instance().exception(message, *args, **kwargs)
 
     # Utils
+    @staticmethod
     def get_normalized_logger_level(level: int) -> int:
         """
         @param {int} level The number that represents the logger level.
@@ -128,6 +147,7 @@ class Logger():
         else: return level
 
     # Private methods
+    @staticmethod
     def __get_handlers() -> list:
         """
         Initializes the handlers and return them as a list.

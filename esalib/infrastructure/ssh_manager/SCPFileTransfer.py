@@ -1,10 +1,10 @@
 # SCP decorator
-from infrastructure.ssh_manager.decorators.WithSCPDecorator import WithSCPDecorator
+from .decorators.WithSCPDecorator import WithSCPDecorator
 
 
 class SCPFileTransfer:
     """
-    @version 2.5.3
+    @version 2.5.5
     
     Wrapper for the SCP decorator for SSH transport. It simplifies the usage of this functionality by 
     encapsulating the decoration of the SSH connection.

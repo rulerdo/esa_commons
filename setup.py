@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 
 setup(
     # Module data
@@ -14,7 +14,7 @@ setup(
         'iroldanl@cisco.com',
     ],
     license = 'MIT',
-    packages = ['esalib'],
+    packages = find_namespace_packages(exclude=['test']),
     zip_safe = False,
     # Dependencies
     install_requires = [

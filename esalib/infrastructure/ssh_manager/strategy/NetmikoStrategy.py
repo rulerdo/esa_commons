@@ -1,6 +1,6 @@
 from netmiko import ConnectHandler
 # SSH
-from infrastructure.ssh_manager.strategy.SSHStrategy import SSHStrategy
+from .SSHStrategy import SSHStrategy
 
 class NetmikoStrategy(SSHStrategy):
     """

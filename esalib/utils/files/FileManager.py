@@ -1,14 +1,14 @@
 import os
 import re
 # Compressed files handler
-from utils.files.compressed_files.CompressedFileManager import CompressedFileManager
+from ..files.compressed_files.CompressedFileManager import CompressedFileManager
 # Utils
-from utils.logger.Logger import Logger
+from ..logger.Logger import Logger
 
 
 class FileManager:
     """
-    @version 1.6.2
+    @version 1.6.3
 
     Class to handle the most common operations for files in a predictable and decoupled-from-implementation way.
     It also supports compressed files, handling the file according to it's extension making use of the 

@@ -1,13 +1,13 @@
 from paramiko import SSHClient, AutoAddPolicy
 from paramiko.channel import Channel
 # SSH
-from infrastructure.ssh_manager.strategy.SSHStrategy import SSHStrategy
+from .SSHStrategy import SSHStrategy
 # Utils
-from utils.validators.IteratorValidator import IteratorValidator
+from ....utils.validators.IteratorValidator import IteratorValidator
 
 class ParamikoStrategy(SSHStrategy):
     """
-    @version 2.2.1
+    @version 2.2.2
     
     SSH strategy, implementing paramiko library for multi-vendor support.
     It receives an options list with the following shape:

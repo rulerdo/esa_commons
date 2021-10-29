@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
 # SSH
-from infrastructure.ssh_manager.SSHConnection import SSHConnection
+from ..SSHConnection import SSHConnection
 
 class FileOperationsDecorator():
     """
-    @version 2.3.0
+    @version 2.3.1
 
     Especification for the decorator to apply file operations to a SSH strategy.
     It provides the signature for the methods to retrieve or send files (where the retrieve_file 

@@ -1,11 +1,10 @@
-import os
 # Base validator
-from utils.validators.ItemListValidator import ItemListValidator
+from ..utils.validators.ItemListValidator import ItemListValidator
 
 
 class ESAVersionValidator(ItemListValidator):
     """
-    @version 1.0.0
+    @version 1.1.0
 
     Validator for the ESA version. Although the ItemListValidator could be functional standalone for this
     use case, a dedicated class wrapper was created because of the number of versions in the list,
@@ -37,8 +36,6 @@ class ESAVersionValidator(ItemListValidator):
             item_to_find = version,
             not_found_message = 'Version number not supported by this script'
         )
-        CURR_DIR = os.path.dirname(os.path.realpath(__file__))
-        print(CURR_DIR)
 
     def validate(self):
         """

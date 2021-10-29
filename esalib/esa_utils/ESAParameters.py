@@ -1,7 +1,7 @@
 import click
 from dataclasses import dataclass
 # Utils
-from utils.logger.Logger import Logger
+from ..utils.logger.Logger import Logger
 
 
 @dataclass

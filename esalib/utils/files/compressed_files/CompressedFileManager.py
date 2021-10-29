@@ -1,11 +1,11 @@
 # Strategy contract
-from utils.files.compressed_files.strategies.CompressedFileStrategy import CompressedFileStrategy
+from .strategies.CompressedFileStrategy import CompressedFileStrategy
 # Strategies
-from utils.files.compressed_files.strategies.GZIPStrategy import GZIPStrategy
+from .strategies.GZIPStrategy import GZIPStrategy
 
 class CompressedFileManager:
     """
-    @version 1.1.2
+    @version 1.1.3
 
     Class to open and get the reference to compressed files, it makes use of the strategy pattern to apply
     the corresponding algorithm or implementation based on the compression type.
