@@ -1,9 +1,9 @@
 import unittest
 # ESA utils
-from esa_utils.ESASSHAgent import ESASSHAgent
-from esa_utils.ESAParameters import ESASSHParameters
+from esalib.esa_utils.ESASSHAgent import ESASSHAgent
+from esalib.esa_utils.ESAParameters import ESASSHParameters
 # Logger
-from utils.logger.Logger import Logger
+from esalib.utils.logger.Logger import Logger
 
 
 class SSHAgentTest(unittest.TestCase):
