@@ -1,4 +1,4 @@
-# esa-commons
+# esa_commons
 Common Libraries for ESA.
 
 ## Installation
