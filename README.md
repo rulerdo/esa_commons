@@ -4,12 +4,12 @@ Common Libraries for ESA.
 ## Installation
 To install the utils, execute the following command:
 ```
-pip install git+https://wwwin-github.cisco.com/rferrert/esa-commons.git
+pip install git+https://wwwin-github.cisco.com/dalanisr/esa_commons.git
 ```
 
 If you need a particular version, install it by the branch name:
 ```
-pip install git+https://wwwin-github.cisco.com/rferrert/esa-commons.git@[version]
+pip install git+https://wwwin-github.cisco.com/dalanisr/esa-commons.git@[version]
 ```
 
 ## Utils
