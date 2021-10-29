@@ -10,7 +10,8 @@ setup(
     author = 'Cisco',
     author_email = [
         'dalanisr@cisco.com',
-        'rferrert@cisco.com'
+        'rferrert@cisco.com',
+        'iroldanl@cisco.com',
     ],
     license = 'MIT',
     packages = ['esalib'],
