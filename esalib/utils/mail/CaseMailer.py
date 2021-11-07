@@ -1,6 +1,7 @@
 # Email manager
 from ...infrastructure.email_manager.EmailManager import EmailManager
 # ESA utils
+from ...esa_utils.ESAParameters import ESAEmailParameters
 from ...esa_utils.ESARemediationStatus import ESARemediationStatus
 # Utils
 from ...utils.logger.Logger import Logger
@@ -8,7 +9,7 @@ from ...utils.logger.Logger import Logger
 
 class CaseMailer:
     """
-    @version 1.1.2
+    @version 2.0.0
 
     Class that encapsulates the process and values involved in the process of sending the informative
     mail with the remediation status.
@@ -29,8 +30,7 @@ class CaseMailer:
     def __init__(
         self, 
         esa_status: ESARemediationStatus,
-        case_owner_email: str,
-        case_identification_number: str
+        esa_email_parameters: ESAEmailParameters
     ):
         """
         @param {ESARemediationStatus} esa_status Instance that contains the status of the remediation, as well as the record of the modified files.
@@ -38,8 +38,8 @@ class CaseMailer:
         @param {str} case_identification_number ID of the case (SR).
         """
         self.esa_status = esa_status
-        self.case_owner_email = case_owner_email
-        self.case_identification_number = case_identification_number
+        self.case_owner_email = esa_email_parameters.case_owner_email
+        self.case_identification_number = esa_email_parameters.case_identification_number
 
     def send_mail(self):
         """
