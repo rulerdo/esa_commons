@@ -19,6 +19,5 @@ setup(
     # Dependencies
     install_requires = [
         'paramiko==2.7.2',
-        'click==8.0.1'
     ]
 )
