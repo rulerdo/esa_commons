@@ -24,50 +24,17 @@ class ESAEmailParameters:
 class LoggerInitializer:
     """Class to get the Logging parameters and initialize the logger"""
 
-    @click.command()
-    @click.option(
-        '--verbose', 
-        is_flag = True, 
-        metavar = '<Flag to show all messages>',
-        help = 'Sets the log level to INFO, to display all the messages'
-    )
-    @click.option(
-        '-v', '--verbose-level',
-        count = True,
-        default = 3,
-        metavar = '<-v * n times>',
-        help = (
-            'Sets the log level according to the repetitions of the letter "v" as follows:\n\n' 
-            '   - 1 time (-v): DEBUG level (all messages are logged)\n\n'
-            '   - 2 times (-vv): INFO level (all messages, except from debug ones, are displayed)\n\n'
-            '   - 3 times (-vvv): WARNING level (only warnings and errors are logged)\n\n'
-            '   - 4 times (-vvvv): ERROR level (only errors and critical exceptions are logged)\n\n'
-            '   - 5 times (-vvvvv): CRITICAL level (only critical errors are logged)\n\n'
-        )
-    )
-    @click.option(
-        '--logfile-name',
-        default = 'app.log',
-        metavar = '<Output logfile name>',
-        show_default = True,
-        help = 'The name of the output logfile'
-    )
     def initialize(
         self,
         verbose,
-        verbose_level,
         logfile_name
     ):
         """Initializes the logger with the provided CLI arguments."""
         # We set the logfile name via the received parameter
         Logger.output_log_file_name = logfile_name
 
-        # We determine the verbose_level
-        logger_level = Logger.get_normalized_logger_level(verbose_level)
-
         # We initialize the logger instance
         Logger.initialize(
-            level = logger_level,
             verbose = verbose
         )
         
@@ -76,9 +43,47 @@ class ESASSHParametersGetter:
     """Class to get the SSH parameters and create the ESASSHParameters container."""
     def __init__(self):
         self.esa_ssh_parameters: ESASSHParameters = None
-        # We set the parameters from CLI
-        self.set()
 
+    def set(
+        self,
+        esa_ip,
+        esa_user,
+        esa_password,
+        esa_ssh_port
+    ):
+        """Retrieves the SSH parameters from CLI arguments."""
+        self.esa_ssh_parameters = ESASSHParameters(esa_ip, esa_user, esa_password, esa_ssh_port)
+
+    def get(self) -> ESASSHParameters:
+        """Returns the SSH parameters instance"""
+        return self.esa_ssh_parameters
+
+
+class ESAEmailParametersGetter:
+    """Class to get the Email parameters and create the ESAEmailParameters container."""
+    def __init__(self):
+        self.esa_email_parameters: ESAEmailParameters = None
+
+    def set(
+        self,
+        send_mail,
+        case_owner,
+        case_number
+    ):
+        """Retrieves the Email parameters from CLI arguments."""
+        self.esa_email_parameters = ESAEmailParameters(send_mail, case_owner, case_number)
+
+    def get(self) -> ESAEmailParameters:
+        """Returns the Email parameters instance"""
+        return self.esa_email_parameters
+
+# Facade
+class ESAParameters:
+    """
+    @version 2.1.0
+
+    Facade to access to the parameters for SSH and email retrieved from the CLI arguments.
+    """
     @click.command()
     @click.option(
         '--esa-ip',
@@ -104,29 +109,6 @@ class ESASSHParametersGetter:
         metavar = '<ESA SSH port>',
         help = 'ESA SSH port'
     )
-    def set(
-        self,
-        esa_ip,
-        esa_user,
-        esa_password,
-        esa_ssh_port
-    ):
-        """Retrieves the SSH parameters from CLI arguments."""
-        self.esa_ssh_parameters = ESASSHParameters(esa_ip, esa_user, esa_password, esa_ssh_port)
-
-    def get(self) -> ESASSHParameters:
-        """Returns the SSH parameters instance"""
-        return self.esa_ssh_parameters
-
-
-class ESAEmailParametersGetter:
-    """Class to get the Email parameters and create the ESAEmailParameters container."""
-    def __init__(self):
-        self.esa_email_parameters: ESAEmailParameters = None
-        # We set the parameters from CLI
-        self.set()
-
-    @click.command()
     @click.option(
         '--send-mail', 
         is_flag = True, 
@@ -145,38 +127,41 @@ class ESAEmailParametersGetter:
         metavar = '<Case owner email>',
         help = 'Email of the TAC member assigned to this case'
     )
-    def set(
+    @click.option(
+        '--verbose', 
+        is_flag = True, 
+        metavar = '<Flag to show all messages>',
+        help = 'Sets the log level to INFO, to display all the messages'
+    )
+    @click.option(
+        '--logfile-name',
+        default = 'app.log',
+        metavar = '<Output logfile name>',
+        show_default = True,
+        help = 'The name of the output logfile'
+    )
+    def __init__(
         self,
+        esa_ip,
+        esa_user,
+        esa_password,
+        esa_ssh_port,
+        # Email arguments
         send_mail,
         case_owner,
-        case_number
+        case_number,
+        # Logging arguments
+        verbose, 
+        logfile_name,
+
     ):
-        """Retrieves the Email parameters from CLI arguments."""
-        self.esa_email_parameters = ESAEmailParameters(send_mail, case_owner, case_number)
-
-    def get(self) -> ESAEmailParameters:
-        """Returns the Email parameters instance"""
-        return self.esa_email_parameters
-
-# Facade
-class ESAParameters:
-    """
-    @version 0.1.0
-
-    Facade to access to the parameters for SSH and email retrieved from the CLI arguments.
-    """
-    def __init__(self):
         # We initialize the logger
-        LoggerInitializer().initialize()
-        # We set the SSH and email parameters
-        self.esa_ssh_parameters: ESASSHParameters = ESASSHParametersGetter().get()
-        self.esa_email_parameters: ESAEmailParameters = ESAEmailParametersGetter().get()
-
-
-
-
-
-
-
-        
-
+        LoggerInitializer().initialize(verbose, logfile_name)
+        # We set the SSH parameters
+        esa_ssh_parameters_getter =  ESASSHParametersGetter()
+        esa_ssh_parameters_getter.set(esa_ip, esa_user, esa_password, esa_ssh_port)
+        self.esa_ssh_parameters: ESASSHParameters = esa_ssh_parameters_getter.get()
+        # We set the email parameters
+        esa_email_parameters_getter = ESAEmailParametersGetter()
+        esa_email_parameters_getter.set(send_mail, case_owner, case_number)
+        self.esa_email_parameters: ESAEmailParameters = esa_email_parameters_getter.get()
