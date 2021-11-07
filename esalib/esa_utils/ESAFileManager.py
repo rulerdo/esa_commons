@@ -7,7 +7,7 @@ from ..utils.files.FileManager import FileManager
 
 class ESAFileManager:
     """
-    @version 1.2.2
+    @version 1.2.3
 
     Class to get files from ESA and retrieve values from them. It is useful to get relevant values for 
     the state. 
@@ -68,8 +68,6 @@ class ESAFileManager:
         self.safely_remove_file(self.ESA_CONFIG_FILE_NAME)
         self.safely_remove_file(self.ESA_LOG_FILE_NAME)
         self.safely_remove_file(self.ESA_REFERENCE_CONFIG_FILE_NAME)
-        # We also clear the local log file
-        self.safely_remove_file(Logger.output_log_file_name)
 
     def get_snmpd_file(self):
         """
