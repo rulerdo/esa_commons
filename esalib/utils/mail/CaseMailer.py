@@ -8,7 +8,7 @@ from ...utils.logger.Logger import Logger
 
 class CaseMailer:
     """
-    @version 1.1.1
+    @version 1.1.2
 
     Class that encapsulates the process and values involved in the process of sending the informative
     mail with the remediation status.
@@ -77,8 +77,7 @@ class CaseMailer:
         Method to get the rerieved files during the process from the ESARemediationStatus instance, if available, otherwise, we send 
         the own log file that contains the general error.
         """
-        return (
-            self.esa_status.get_remediation_attachments()
-            if self.esa_status != None
-            else [Logger.output_log_file_name]
-        )
+        attachments = [Logger.output_log_file_name]
+        if self.esa_status != None:
+            attachments += self.esa_status.get_remediation_attachments()
+        return attachments
