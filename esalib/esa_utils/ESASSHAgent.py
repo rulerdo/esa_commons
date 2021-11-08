@@ -9,7 +9,7 @@ from ..utils.logger.Logger import Logger
 
 class ESASSHAgent:
     """
-    @version 3.7.1
+    @version 3.8.1
 
     SSH agent for the ESA. It provides a predictable mechanism to initialize and keep a SSH connection.
     File transfer functionalities via SCP are also available.
@@ -66,7 +66,8 @@ class ESASSHAgent:
         timeout: float = 5,
         sleep_time: float = 0.1,
         buffer_size: int = 4096,
-        command_delimiter: str = '(SERVICE)>'
+        command_delimiter: str = '(SERVICE)>',
+        keep_cli_mode_open: bool = False
     ) -> str:
         """
         @param {str} command Command to execute.
@@ -84,8 +85,9 @@ class ESASSHAgent:
         # Executes the command at CLI level
         output = SSHManager.exec_async_command(command, terminal_delimiter = command_delimiter)
         # Exits the CLI mode
-        SSHManager.exec_async_command('exit', terminal_delimiter = ']')
-        SSHManager.exec_async_command('exit', terminal_delimiter = '#', close_channel_after = True)
+        if not keep_cli_mode_open:
+            SSHManager.exec_async_command('exit', terminal_delimiter = ']')
+            SSHManager.exec_async_command('exit', terminal_delimiter = '#', close_channel_after = True)
         return output
 
 
