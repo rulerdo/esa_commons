@@ -1,3 +1,4 @@
+from enum import Enum, auto
 # SSH
 from .ESAParameters import ESASSHParameters
 from ..infrastructure.ssh_manager.SSHManager import SSHManager
@@ -28,6 +29,8 @@ class ESASSHAgent:
         self.esa_user = ssh_parameters.esa_user
         self.esa_password = ssh_parameters.esa_password
         self.esa_ssh_port = ssh_parameters.esa_ssh_port
+        # Shell scope
+        self.scope = ESASSHAgentScopes._NORMAL_MODE
 
     def start_connection(self):
         """
@@ -52,6 +55,34 @@ class ESASSHAgent:
         """
         return self.ssh_connection
 
+    def enter_cli_mode(
+        self,
+        timeout: float = 5,
+        sleep_time: float = 0.1,
+        buffer_size: int = 4096,
+    ):
+        """
+        @param {float} timeout The time to wait before raising a timeout exception while expecting a command output (5s by default).
+        @param {float} sleep_time The time to wait between output lectures (0.1s or 100ms by default).
+        @param {int} buffer_size The size of the buffer where the async aoutput is going to be stored (4096 bytes by default).
+
+        Enters to the CLI mode wit the specified SSH channel properties.
+        """
+        # We set the channel properties
+        SSHManager.set_channel_properties(timeout, sleep_time, buffer_size)
+        # Enters to the CLI mode
+        SSHManager.exec_async_command('csh', terminal_delimiter = ']')
+        SSHManager.exec_async_command('cli', terminal_delimiter = '(SERVICE)>')
+        # We set the scope as CLI mode
+        self.scope = ESASSHAgentScopes._CLI_MODE
+
+    def close_cli_mode(self):
+        """Exits the CLI mode, setting the scope to _NORMAL_MODE."""
+        SSHManager.exec_async_command('exit', terminal_delimiter = ']')
+        SSHManager.exec_async_command('exit', terminal_delimiter = '#', close_channel_after = True)
+        # We set the scope as normal mode
+        self.scope = ESASSHAgentScopes._NORMAL_MODE
+
     def execute_command(self, command: str) -> str: 
         """
         @param {str} command Command to execute.
@@ -63,31 +94,30 @@ class ESASSHAgent:
     def execute_cli_command(
         self, 
         command: str,
-        timeout: float = 5,
-        sleep_time: float = 0.1,
-        buffer_size: int = 4096,
         command_delimiter: str = '(SERVICE)>',
-        keep_cli_mode_open: bool = False
+        exit_cli_mode_after: bool = False,
+        more_output_delimiter: str = '-Press Any Key For More-'
     ) -> str:
         """
         @param {str} command Command to execute.
-        @param {float} timeout The time to wait before raising a timeout exception while expecting a command output (5s by default).
-        @param {float} sleep_time The time to wait between output lectures (0.1s or 100ms by default).
-        @param {int} buffer_size The size of the buffer where the async aoutput is going to be stored (4096 bytes by default).
+        @param {str} command_delimiter The string that we expect to find after the command ends.
+        @param {bool} exit_cli_mode_after Flag that indicates if we should exit CLI mode after command's execution.
+        @param {str} more_output_delimiter The string that indicates us that some parts of the output were hidden.
 
         Executes a command in CLI mode and keeps the outpout in the SSHManager buffer, which is also returned.
         """
-        # We set the channel properties
-        SSHManager.set_channel_properties(timeout, sleep_time, buffer_size)
-        # Enters to the CLI mode
-        SSHManager.exec_async_command('csh', terminal_delimiter = ']')
-        SSHManager.exec_async_command('cli', terminal_delimiter = '(SERVICE)>')
+        # We enter CLI mode if the current scope is not CLI with the default parameters (timeout, sleep_time and buffer_size)
+        if self.scope != ESASSHAgentScopes._CLI_MODE:
+            self.enter_cli_mode()
         # Executes the command at CLI level
-        output = SSHManager.exec_async_command(command, terminal_delimiter = command_delimiter)
-        # Exits the CLI mode
-        if not keep_cli_mode_open:
-            SSHManager.exec_async_command('exit', terminal_delimiter = ']')
-            SSHManager.exec_async_command('exit', terminal_delimiter = '#', close_channel_after = True)
+        output = SSHManager.exec_async_command(
+            command, 
+            terminal_delimiter = command_delimiter,
+            more_output_delimiter = more_output_delimiter
+        )
+        # Exits the CLI mode if it was specified to do so
+        if exit_cli_mode_after:
+            self.close_cli_mode()
         return output
 
 
@@ -125,5 +155,10 @@ class ESASSHAgent:
         """
         SCPFileTransfer(self.ssh_connection).upload_file(file_to_upload, destination_path)
     
+
+class ESASSHAgentScopes(Enum):
+    """SSH scopes definition."""
+    _CLI_MODE = auto()
+    _NORMAL_MODE = auto()
 
 

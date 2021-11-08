@@ -7,7 +7,7 @@ from ....utils.validators.IteratorValidator import IteratorValidator
 
 class ParamikoStrategy(SSHStrategy):
     """
-    @version 2.2.2
+    @version 2.3.2
     
     SSH strategy, implementing paramiko library for multi-vendor support.
     It receives an options list with the following shape:
@@ -60,12 +60,14 @@ class ParamikoStrategy(SSHStrategy):
         command: str,
         terminal_delimiter: str,
         close_channel_after: bool,
+        more_output_delimiter: str,
     ):
         """
         @param {str} command The command to execute.
         @param {str} terminal_delimiter The characters sequence that comes before the cursor at the terminal (like ~$ in Linux).
         @param {bool} close_channel_after Flag to indicate if the channel should be closed after the command execution.
-
+        @param {str} more_output_delimiter The string that indicates us that some parts of the output were hidden.
+        
         Executes commands whose output could be delayed or by steps, specific for the paramiko library. We  make use of the 
         async_command_output helper, to wait for the whole output based on the terminal delimiter sequence (like ~$ in Linux).
         """
@@ -74,7 +76,7 @@ class ParamikoStrategy(SSHStrategy):
             self.channel = self.connection.invoke_shell()
         # We execute the command, and wait until it is complete to get the output
         self.channel.send(f'{ command }\n')
-        output = self.__get_async_command_output(terminal_delimiter)
+        output = self.__get_async_command_output(terminal_delimiter, more_output_delimiter)
         # We close the channel and return the output
         if close_channel_after:
             self.channel.close()
@@ -99,7 +101,11 @@ class ParamikoStrategy(SSHStrategy):
 
     # Internal helpers
 
-    def __get_async_command_output(self, terminal_delimiter: str) -> str:
+    def __get_async_command_output(
+        self, 
+        terminal_delimiter: str,
+        more_output_delimiter: str
+    ) -> str:
         """
         @param {str} terminal_delimiter The characters sequence that comes before the cursor at the terminal (like ~$ in Linux).
 
@@ -115,6 +121,9 @@ class ParamikoStrategy(SSHStrategy):
         # We receive data from the channel until we find the terminal delimiter (The characters before the stdin cursor)
         while response.find(terminal_delimiter) == -1:
             response += self.channel.recv(self.buffer_size).decode()
+            # If we found the more_output_delimiter, we request all the output by chunks by sending the space char
+            if response.find(more_output_delimiter) != -1:
+                self.channel.send(' ')
             # We update the iterations and validate the constraint via the generator
             next(iterations_validator)
         return response

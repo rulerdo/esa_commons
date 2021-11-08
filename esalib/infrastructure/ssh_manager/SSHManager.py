@@ -6,7 +6,7 @@ from .strategy.SSHStrategy import SSHStrategy
 
 class SSHManager:
     """
-    @version 3.4.1
+    @version 3.5.1
     
     Class to establish an SSH connection with a device implementing the Singleton pattern, to keep a single 
     instance of the connection through all the process. 
@@ -137,11 +137,13 @@ class SSHManager:
         command: str, 
         terminal_delimiter: str = '~$',
         close_channel_after: bool = False,
+        more_output_delimiter: str = '-Press Any Key For More-'
     ):
         """
         @param {str} command The command to execute.
         @param {str} terminal_delimiter The characters sequence that comes before the cursor at the terminal (like ~$ in Linux).
         @param {bool} close_channel_after Flag to indicate if the channel should be closed after the command execution.
+        @param {str} more_output_delimiter The string that indicates us that some parts of the output were hidden.
 
         Method to execute an async command (a command whose output may be delayed).
         """
@@ -152,7 +154,8 @@ class SSHManager:
         return SSHManager.__strategy.execute_async_command(
             command,
             terminal_delimiter,
-            close_channel_after
+            close_channel_after,
+            more_output_delimiter
         )
 
     @staticmethod

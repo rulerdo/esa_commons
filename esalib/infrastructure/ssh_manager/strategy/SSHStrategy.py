@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 class SSHStrategy:
     """
-    version 3.3.1
+    version 3.4.1
     
     Contract for the SSH strategies, it specifies the methods that must be implemented, as well as the parameters that they receive.
     """
@@ -38,6 +38,7 @@ class SSHStrategy:
         command: str,
         terminal_delimiter: str,
         close_channel_after: bool,
+        more_output_delimiter: str,
     ) -> str: pass
 
     # Method to set the channel properties (for execute_async_command and other methods)
