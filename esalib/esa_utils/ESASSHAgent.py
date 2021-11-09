@@ -124,12 +124,12 @@ class ESASSHAgent:
         """
         @param {str} commit_message String that contains the message for the commit.
 
-        @returns {bool} Indicates if the changes were comitted successfully.
+        @returns {bool} Indicates if the changes were committed successfully.
         Facade method to commit changes. It only requires the commit message.
         """
         self.execute_cli_command('commit', command_delimiter = ']>')
         output = self.execute_cli_command(commit_message)
-        # Indicates if the changes were comitted successfully
+        # Indicates if the changes were committed successfully
         return output.find('Changes committed') != -1
 
 
