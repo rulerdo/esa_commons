@@ -3,7 +3,7 @@ from setuptools import setup, find_namespace_packages
 setup(
     # Module data
     name = 'esalib',
-    version = '1.2.1',
+    version = '1.3.2',
     description = 'Utilities for the ESA use cases, as SSHManager, FileManager and custom Logging',
     # Contact data
     url = 'https://www.cisco.com',
