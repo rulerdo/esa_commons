@@ -10,7 +10,7 @@ from ..utils.logger.Logger import Logger
 
 class ESAStateManager:
     """
-    @version 1.3.1
+    @version 1.4.1
 
     Container for the ESA state, storing relevant information about it, such as the serial number, tenant
     id or version number. It also provides methods to set automtically these values from the files managed
@@ -20,7 +20,8 @@ class ESAStateManager:
     def __init__(
         self, 
         ssh_agent: ESASSHAgent,
-        esa_file_manager: ESAFileManager
+        esa_file_manager: ESAFileManager,
+        supported_versions: list[str] = [],
     ):
         """
         @param {ESASSHAgent} Instance of the SSH agent for ESA. Generally there is one per use case.
@@ -28,6 +29,7 @@ class ESAStateManager:
         """
         self.ssh_agent: ESASSHAgent = ssh_agent
         self.esa_file_manager: ESAFileManager = esa_file_manager
+        self.supported_versions: list[str] = supported_versions
         # Internal state
         self.tenant_id = None
         self.serial_number = ''
@@ -106,7 +108,7 @@ class ESAStateManager:
         implementation. If it finds that the version is not supported, the execution will stop at this point.
         """
         # Version validation
-        ESAVersionValidator(self.version_number).validate()
+        ESAVersionValidator(self.version_number, self.supported_versions).validate()
 
         if self.version_number == None:
             raise Exception('Version number field not found')

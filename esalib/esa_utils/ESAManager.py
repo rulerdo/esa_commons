@@ -35,7 +35,7 @@ class ESARemediationUseCase():
 
 class ESAManager:
     """
-    @version 1.3.0
+    @version 1.4.0
     
     Class to initialize all ESA services for the remediation use cases. It starts the SSH connections, retrieves the basic files and
     sets the ES state from the values in those files. Finally, the remediation status manager is initialized with the custom status codes.
@@ -43,9 +43,11 @@ class ESAManager:
     def __init__(
         self,
         esa_parameters: ESAParameters,
-        custom_status_codes: ESABaseRemediationStatusCodes
+        supported_versions: list[str],
+        custom_status_codes: ESABaseRemediationStatusCodes,
     ):
         self.esa_parameters: ESAParameters = esa_parameters
+        self.supported_versions: list[str] = supported_versions
         self.custom_status_codes: ESABaseRemediationStatusCodes = custom_status_codes
         # To be initialized
         self.esa_ssh_agent: ESASSHAgent = None
@@ -120,7 +122,7 @@ class ESAManager:
         # We create a file manager (required for ESAStateManager)
         self.esa_file_manager = ESAFileManager(self.esa_ssh_agent)
         # We create the ESAStateManager and initialize it
-        self.esa_state_manager = ESAStateManager(self.esa_ssh_agent, self.esa_file_manager)
+        self.esa_state_manager = ESAStateManager(self.esa_ssh_agent, self.esa_file_manager, self.supported_versions)
         self.esa_state_manager.set_state_from_files()
         # We initialize the remediation status container
         self.esa_remediation_status: ESARemediationStatus = ESARemediationStatus(
