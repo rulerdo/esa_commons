@@ -19,14 +19,17 @@ class ESARemediationUseCase():
     __metaclass__ = ABCMeta
 
     # Constructor, it receives the ESA utils initialized instances.
-    @abstractmethod
     def __init__(
         self, 
         esa_ssh_agent: ESASSHAgent,
         esa_file_manager: ESAFileManager,
         esa_state_manager: ESAStateManager,
         esa_remediation_status: ESARemediationStatus
-    ): raise NotImplementedError
+    ): 
+        self.esa_ssh_agent = esa_ssh_agent
+        self.esa_file_manager = esa_file_manager
+        self.esa_state_manager = esa_state_manager
+        self.esa_remediation_status = esa_remediation_status
 
     #Use case entry point
     @abstractmethod
@@ -35,7 +38,7 @@ class ESARemediationUseCase():
 
 class ESAManager:
     """
-    @version 1.4.0
+    @version 1.4.1
     
     Class to initialize all ESA services for the remediation use cases. It starts the SSH connections, retrieves the basic files and
     sets the ES state from the values in those files. Finally, the remediation status manager is initialized with the custom status codes.
@@ -55,10 +58,16 @@ class ESAManager:
         self.esa_state_manager: ESAStateManager = None
         self.esa_remediation_status: ESARemediationStatus = None
 
-    def execute_use_case_remediation(self, remediation_use_case, *args, **kwargs):
+    def execute_use_case_remediation(
+        self, 
+        remediation_use_case, 
+        cleanup_function = None,
+        *args, 
+        **kwargs
+    ):
         """
         @param {class} remediation_use_case The remediation use case class (without creating an instance of it, example: UseCase, instead of UseCase())
-
+        @param {function} cleanup_function Function to execute after the use case ends.
         Entry point for the use case. It calls all the required methods to remediate the issue.
         """
         try:
@@ -76,6 +85,9 @@ class ESAManager:
             # Finally, we delete the retrieved files from ESA, as they are no longer required
             if self.esa_file_manager != None:
                 self.esa_file_manager.remove_essential_files()
+            # We execute the cleanup function, if it was provided
+            if cleanup_function != None:
+                cleanup_function(self)
     
     # Internal methods
 

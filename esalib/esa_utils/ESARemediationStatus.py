@@ -1,3 +1,5 @@
+# Utils
+from ..utils.logger.Logger import Logger
 
 class ESABaseRemediationStatusCodes():
     """
@@ -35,7 +37,7 @@ class ESABaseRemediationStatusCodes():
 
 class ESARemediationStatus():
     """
-    @version 1.2.0
+    @version 1.3.0
 
     Class to keep track of the remediation status via status codes. It also allows to keep track of the 
     files that were modified, which are candidates to be incorporated to the mail that is sent at the end
@@ -62,6 +64,15 @@ class ESARemediationStatus():
         Appends a status code to the dictionary.
         """
         self.__add_code_to_dictionary(status_code)
+
+    def push_and_log_status_code(self, status_code: int):
+        """
+        @param {int} status_code Remediation status code.
+
+        Appends a status code to the dictionary and logs it's message.
+        """
+        self.push_status_code(status_code)
+        Logger.info(self.custom_status_codes.get_message_by_status_code(status_code))
 
     def push_obtained_file(self, file_name: str):
         """

@@ -8,7 +8,7 @@ from ..logger.Logger import Logger
 
 class FileManager:
     """
-    @version 1.6.3
+    @version 1.7.3
 
     Class to handle the most common operations for files in a predictable and decoupled-from-implementation way.
     It also supports compressed files, handling the file according to it's extension making use of the 
@@ -119,6 +119,44 @@ class FileManager:
         # We close the file and return the content
         self.close()
         return content
+
+    def write_to_file(
+        self, 
+        file_content: str, 
+        file_edit_mode: str = 'wb+',
+    ):
+        """
+        @param {str} file_content Content to write to file.
+        @param {str} file_edit_mode The mode to open the file.
+
+        Method to write a string to a file.
+        """
+        self.open(file_edit_mode)
+        self.file.write(bytes(file_content, 'utf-8'))
+        self.close()
+
+    def replace_value_in_file(
+        self,
+        search_pattern: str,
+        replace_value_or_pattern: str,
+        path_to_output_file: str
+    ):
+        """
+        @param {str} search_pattern The pattern to search in the string, example: "(?<=active_sub_configs = \()(.*)(12.0.0)"
+        @param {str} replace_value_or_pattern The value to replace the matching pattern with.
+        @param {str} path_to_output_file The path to the output file (the file with the replaced value).
+        
+        @returns {str} The content of the file.
+
+        Method to replace a value in a file. It receives 2 regex and the path to the output file, which can be a non-existing one
+        (the file will be created). It returns the content of the updated file.
+        """
+        updated_file_content = re.sub(search_pattern, replace_value_or_pattern, self.read_file_content())
+        updated_file_manager = FileManager(path_to_output_file)
+        # We write to the output file in the default mode (wb+, to create it if it does not exist or to replace it's content if it already exists)
+        updated_file_manager.write_to_file(updated_file_content)
+        return updated_file_manager.read_file_content()
+
         
 
     # Internal utils
