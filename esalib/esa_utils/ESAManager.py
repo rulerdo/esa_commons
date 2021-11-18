@@ -57,6 +57,15 @@ class ESAManager:
         self.esa_file_manager: ESAFileManager = None
         self.esa_state_manager: ESAStateManager = None
         self.esa_remediation_status: ESARemediationStatus = None
+    
+    def get_esa_utils(self):
+        """Returns all the initialized ESA utils"""
+        return (
+            self.esa_ssh_agent, 
+            self.esa_file_manager, 
+            self.esa_state_manager, 
+            self.esa_remediation_status
+        )
 
     def execute_use_case_remediation(
         self, 
@@ -74,7 +83,7 @@ class ESAManager:
             # We initialize the ESA state manager
             self.__load()
             # We perform the remediations 
-            self.remediation_use_case: ESARemediationUseCase = remediation_use_case(*self.__get_esa_utils())
+            self.remediation_use_case: ESARemediationUseCase = remediation_use_case(*self.get_esa_utils())
             self.remediation_use_case.solve(*args, **kwargs)
         # We handle the exception, displaying the error message and ending the process
         except Exception as exception:
@@ -99,15 +108,6 @@ class ESAManager:
         self.__start_ssh_connection()
         # We initialize the ESA state manager
         self.__initialize_esa_state()
-    
-    def __get_esa_utils(self):
-        """Returns all the initialized ESA utils"""
-        return (
-            self.esa_ssh_agent, 
-            self.esa_file_manager, 
-            self.esa_state_manager, 
-            self.esa_remediation_status
-        )
 
     def __report_exception(self, exception: Exception):
         """Reports an exception at logger and remediation status level."""
