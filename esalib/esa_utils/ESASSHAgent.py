@@ -10,7 +10,7 @@ from ..utils.logger.Logger import Logger
 
 class ESASSHAgent:
     """
-    @version 3.9.1
+    @version 3.9.2
 
     SSH agent for the ESA. It provides a predictable mechanism to initialize and keep a SSH connection.
     File transfer functionalities via SCP are also available.
@@ -127,7 +127,11 @@ class ESASSHAgent:
         @returns {bool} Indicates if the changes were committed successfully.
         Facade method to commit changes. It only requires the commit message.
         """
-        self.execute_cli_command('commit', command_delimiter = ']>')
+        output = self.execute_cli_command('commit', command_delimiter = '>')
+        # If there's no data to commit, we return True, as it is unchanged
+        if output.find('There is no data to commit') != -1:
+            return True
+        # Otherwise, we enter the commit message
         output = self.execute_cli_command(commit_message)
         # Indicates if the changes were committed successfully
         return output.find('Changes committed') != -1
