@@ -28,6 +28,9 @@ class ESAVersionValidator(ItemListValidator):
         Method to perform the actual validation, it checks for the existance of the version in the
         supported versions list, raising an exception if not found.
         """
+        # If the provided list is empty, the script is considered as valid for all AsyncOS versions
+        if len(self.items_list) == 0:
+            return
         # Executes the validate method of the parent class
         super().validate()
 

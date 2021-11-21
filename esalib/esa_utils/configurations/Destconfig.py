@@ -1,40 +1,66 @@
 import re
 from collections import namedtuple
+# Base configuration
+from .BaseConfig import BaseConfig
 # ESA utils
 from ..ESASSHAgent import ESASSHAgent
-# Utils
-from ...utils.logger.Logger import Logger
 
-class DestconfigManager:
+class DestconfigManager(BaseConfig):
+    """
+    @version 2.0.0
+
+    Class that provides methods to access and configure parameters in destconfig mode. It extends the base class BaseConfig to add 
+    methods specific to destconfig mode, like cluster option and operations over domain entries.
+    """
 
     def __init__(
         self,
         esa_ssh_agent: ESASSHAgent,
         is_in_cluster_mode: bool = True
     ):
-        self.esa_ssh_agent = esa_ssh_agent
-        self.is_in_cluster_mode = is_in_cluster_mode
+        # We initialize the parent class
+        super().__init__(
+            esa_ssh_agent = esa_ssh_agent, 
+            config_mode_name = 'destconfig',
+            is_in_cluster_mode = is_in_cluster_mode
+        )
         # Internal state
         self.list_entries = ''
         # We initialize the destconfig mode
         self.__initialize()
 
     def __initialize(self) -> None:
+        """Enters to configuration mode (destconfig) and introduces the clustering option (1 or 2)."""
         configuration_mode = '1' if self.is_in_cluster_mode else '2'
-        self.esa_ssh_agent.execute_cli_command('destconfig', command_delimiter = ']>')
+        # We enter to config mode (destconfig) and enter the option for cluster or individual settings
+        self.enter_config_mode()
         self.esa_ssh_agent.execute_cli_command(configuration_mode, command_delimiter = ']>')
-        Logger.info('Switched to destconfig mode.')
+        
 
-    def list_configured_entries(self) -> str:
+    def list_configured_entries(self) -> None:
+        """Executes the list command and stores the output in an internal variable."""
         self.list_entries = self.apply_operation_to_configured_entries('LIST')
 
     def find_configured_entry_by_domain(self, domain: str):
+        """
+        @param {str} domain The domain whose configuration values we are going to search in the entries list.
+
+        Finds all the configured values for a domain entry.
+        """
         regex = re.compile(f'{domain}\s*(\w+)\s*(\w+)\s*(\w+)\s*(\w+)\s*(\w+)\s*(\w+)')
         matches = regex.findall(self.list_entries)
         return matches.pop(0) if len(matches) > 0 else None
 
-    def is_parameter_enabled_for_entry(self, parameter: str, configured_entry: tuple) -> bool:
+    def is_parameter_enabled_for_entry(
+        self, 
+        parameter: str, 
+        configured_entry: tuple
+    ) -> bool:
         """
+        @param {str} parameter The parameter to retrieve.
+        @param {tuple} configured_entry The tuple that contains the configurations values for an specific entry.
+
+        Mehtod to get the value of a parameter or specific configuration in the tuple containing the configured values for the entry.
         """
         destconfig_parameters = DestconfigParameters(entry = configured_entry)
         return destconfig_parameters.is_parameter_enabled(parameter)
@@ -47,22 +73,9 @@ class DestconfigManager:
         """
         return self.esa_ssh_agent.execute_cli_command(operation, command_delimiter = ']>')
 
-    def introduce_configuration_value(self, value: str) -> str:
-        """
-        @param {str} value Value to introduce to the configuration prompt.
-
-        Facade method to introduce a specific configuration value. It does the same as the previous method, but it's more declarative and 
-        avoids confusion.
-        """
-        return self.esa_ssh_agent.execute_cli_command(value, command_delimiter = ']>')
-
-    def leave_default_configuration_value(self) -> str:
-        """Facade method to leave a default value by hitting ENTER (which is made after each command by ssh_agent)."""
-        return self.esa_ssh_agent.execute_cli_command('', command_delimiter = ']>')
-
     def exit_destconfig_mode(self) -> None:
-        """Facade method to exit destconfig mode by hitting ENTER."""
-        self.esa_ssh_agent.execute_cli_command('\n', command_delimiter = '(SERVICE)>')
+        """Exits destconfig mode."""
+        self.exit_config_mode()
 
 # Parameters
 

@@ -1,9 +1,9 @@
 # Utils
 from ..utils.logger.Logger import Logger
 
-class ESABaseRemediationStatusCodes():
+class ESABaseRemediationStatusCodes:
     """
-    @version 1.2.0
+    @version 1.2.1
 
     Container of the status codes for the remediation and their corresponding message.
     It can be extended with more definitions.
