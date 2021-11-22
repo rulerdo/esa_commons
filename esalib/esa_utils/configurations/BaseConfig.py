@@ -1,5 +1,4 @@
 import re
-from typing import NewType
 # ESA utils
 from ..ESASSHAgent import ESASSHAgent
 # Utils
@@ -7,7 +6,7 @@ from ...utils.logger.Logger import Logger
 
 class BaseConfig:
     """
-    @version 1.2.0
+    @version 1.2.2
 
     Base class of the configuration options, it implements the base methods and business logic.
     """
@@ -44,6 +43,7 @@ class BaseConfig:
         """
         Enters to configuration mode of the specific mode provided as argument.
         """
+        self.esa_ssh_agent.enter_cli_mode(sleep_time = 0.2)
         self.esa_ssh_agent.execute_cli_command(self.config_mode_name, command_delimiter = self.CONFIG_MODE_DELIMITER)
         # We update the flag that indicates if we are in config mode
         self.is_in_config_mode = True
@@ -66,7 +66,7 @@ class BaseConfig:
         """
         output = self.esa_ssh_agent.execute_cli_command(value, command_delimiter = ']>')
         # We handle the case where the device asks for the configuration mode (cluster or individual machine) according to the value of is_in_cluster_mode
-        return self.__enter_cluster_mode_option_if_requested(output, original_value = value)
+        return self.__enter_cluster_mode_option_if_requested(output)
 
     def increase_nested_config_level(self):
         """Method to increase by one the nested config level (it will indicate the number of \n to enter to exit configuration mode)."""
@@ -88,7 +88,10 @@ class BaseConfig:
         Logger.info('All default values for requested configuration parameters were left.')
 
     # Internal methods
-    def __enter_cluster_mode_option_if_requested(self, command_output: str, original_value: str) -> str:
+    def __enter_cluster_mode_option_if_requested(
+        self, 
+        command_output: str
+    ) -> str:
         """
         @param {str} command_output The output of the executed command, which may contain the cluster warning.
         @param {str} original_value The value that was introduced before the configuration mode selection.
@@ -99,10 +102,9 @@ class BaseConfig:
             return command_output
         # We select the cluster configuration mode (1 for cluster 2 for individual machine)
         configuration_mode = '1' if self.is_in_cluster_mode else '2'
-        self.introduce_configuration_value(configuration_mode)
+        output = self.introduce_configuration_value(configuration_mode)
         Logger.info(f'Option { configuration_mode } entered to warning [NOTICE: This configuration command has not yet been configured for the current cluster mode]')
-        # We enter the original command and return the output
-        return self.introduce_configuration_value(original_value)
+        return output
 
     def __is_cluster_warning_present(self, command_output: str) -> bool:
         """
