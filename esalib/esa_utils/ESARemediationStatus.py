@@ -108,7 +108,7 @@ class ESARemediationStatus():
         """
         return '\n'.join(value for value in self.messages.values())
 
-    def get_remediation_attachments(self) -> list[str]:
+    def get_remediation_attachments(self) -> list:
         """
         Returns the list of file paths that were retrieved or updated during the remediation process.
         Suitable for email attachments.

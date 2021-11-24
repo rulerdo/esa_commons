@@ -106,7 +106,7 @@ class EmailAttachment:
         return self.attachment_wrapper
 
 
-    def __set_attachment_content_type(self) -> tuple[str, str]:
+    def __set_attachment_content_type(self) -> tuple:
         """
         @param {str} attachment_path Path to the attachment.
 

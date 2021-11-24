@@ -21,7 +21,7 @@ class WithSCPDecorator(FileOperationsDecorator):
     def retrieve_file(
         self, 
         source_file, 
-    ) -> dict[str, bool]:
+    ):
         """
         @param {str} source_file  The remote path, the path where the remote file is located
 
