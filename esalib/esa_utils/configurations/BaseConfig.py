@@ -53,7 +53,7 @@ class BaseConfig:
         """Facade method to exit configuration mode by hitting ENTER."""
         # We get the escape sequence according to the nested level value, this indicates the required number of \n chars to exi configuration mode
         exit_sequence = ''.join('\n' for _ in range(self.config_nested_level))
-        self.esa_ssh_agent.execute_cli_command(exit_sequence, command_delimiter = '(SERVICE)>')
+        self.esa_ssh_agent.execute_cli_command(exit_sequence, command_delimiter = '>')
         # We update the flag that indicates if we are in config mode
         self.is_in_config_mode = False
         Logger.info(f'Exiting { self.config_mode_name } mode.')

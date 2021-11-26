@@ -72,7 +72,7 @@ class ESASSHAgent:
         SSHManager.set_channel_properties(timeout, sleep_time, buffer_size)
         # Enters to the CLI mode
         SSHManager.exec_async_command('csh', terminal_delimiter = ']')
-        SSHManager.exec_async_command('cli', terminal_delimiter = '(SERVICE)>')
+        SSHManager.exec_async_command('cli', terminal_delimiter = '>')
         # We set the scope as CLI mode
         self.scope = ESASSHAgentScopes._CLI_MODE
 
@@ -94,7 +94,7 @@ class ESASSHAgent:
     def execute_cli_command(
         self, 
         command: str,
-        command_delimiter: str = '(SERVICE)>',
+        command_delimiter: str = '>',
         exit_cli_mode_after: bool = False,
         more_output_delimiter: str = '-Press Any Key For More-'
     ) -> str:
