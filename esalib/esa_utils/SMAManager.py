@@ -8,8 +8,6 @@ class SMAManager:
         # To be defined later
         self.ssh_agent: ESASSHAgent = None
         self.ssh_parameters: ESASSHParameters = None 
-        # The connection is started by default
-        self.start_connection()
 
     def initialize(self):
         """Facade to retrieve the SSH parameters and start the connection."""
