@@ -10,7 +10,7 @@ from ..utils.logger.Logger import Logger
 
 class ESASSHAgent:
     """
-    @version 3.9.2
+    @version 3.9.3
 
     SSH agent for the ESA. It provides a predictable mechanism to initialize and keep a SSH connection.
     File transfer functionalities via SCP are also available.
@@ -46,6 +46,10 @@ class ESASSHAgent:
 
         # We copy the reference to the session to a member variable
         self.ssh_connection = SSHManager.get_connection()
+
+    def close_connection(self) -> None:
+        """Method to close the SSH connection at SSHManager level."""
+        SSHManager.disconnect()
 
     def get_ssh_connection(self):
         """
