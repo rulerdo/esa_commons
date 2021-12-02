@@ -68,8 +68,6 @@ class LoggerInitializer:
     def initialize():
         """Initializes the logger with the provided CLI arguments."""
         arguments = ESACLIArguments().arguments
-        # We clear the logfile
-        LoggerInitializer.__delete_log_file()
         # We set the logfile name via the received parameter
         Logger.output_log_file_name = arguments.logfile_name
 
@@ -79,9 +77,12 @@ class LoggerInitializer:
         )
 
     @staticmethod
-    def __delete_log_file():
+    def delete_log_file():
         """Deletes the log file"""
-        FileManager(Logger.output_log_file_name).delete_file()
+        try:
+            with open(Logger.output_log_file_name, 'w'): pass
+        except:
+            pass
         
 
 class ESASSHParametersGetter:

@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 # ESA utils
 from .ESASSHAgent import ESASSHAgent
-from .ESAParameters import ESAParameters
+from .ESAParameters import ESAParameters, LoggerInitializer
 from .ESAFileManager import ESAFileManager
 from .ESAStateManager import ESAStateManager
 from .ESARemediationStatus import ESARemediationStatus, ESABaseRemediationStatusCodes
@@ -12,7 +12,7 @@ from ..utils.mail.CaseMailer import CaseMailer
 
 class ESARemediationUseCase():
     """
-    version 1.2.0
+    version 1.2.1
     
     Contract for the remediation use cases, it specifies the methods that must be implemented, as well as the parameters that they receive.
     """
@@ -94,6 +94,8 @@ class ESAManager:
             # Finally, we delete the retrieved files from ESA, as they are no longer required
             if self.esa_file_manager != None:
                 self.esa_file_manager.remove_essential_files()
+            # We remove the app log file
+            LoggerInitializer.delete_log_file()
             # We execute the cleanup function, if it was provided
             if cleanup_function != None:
                 cleanup_function(self)

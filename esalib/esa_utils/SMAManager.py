@@ -1,10 +1,13 @@
 # ESA utils
 from .ESASSHAgent import ESASSHAgent
-from .ESAParameters import ESASSHParameters
+from .ESAParameters import LoggerInitializer, ESASSHParameters
 
 class SMAManager:
 
     def __init__(self):
+        # We initialize the logger
+        # We don't retrieve the SSHParameters from ESAParameters, because they define the parameters for the ESA, not the SMA.
+        LoggerInitializer.initialize()
         # To be defined later
         self.ssh_agent: ESASSHAgent = None
         self.ssh_parameters: ESASSHParameters = None 

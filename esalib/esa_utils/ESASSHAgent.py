@@ -10,7 +10,7 @@ from ..utils.logger.Logger import Logger
 
 class ESASSHAgent:
     """
-    @version 3.9.3
+    @version 3.10.3
 
     SSH agent for the ESA. It provides a predictable mechanism to initialize and keep a SSH connection.
     File transfer functionalities via SCP are also available.
@@ -68,7 +68,7 @@ class ESASSHAgent:
         """
         @param {float} timeout The time to wait before raising a timeout exception while expecting a command output (5s by default).
         @param {float} sleep_time The time to wait between output lectures (0.1s or 100ms by default).
-        @param {int} buffer_size The size of the buffer where the async aoutput is going to be stored (4096 bytes by default).
+        @param {int} buffer_size The size of the buffer where the async output is going to be stored (4096 bytes by default).
 
         Enters to the CLI mode wit the specified SSH channel properties.
         """
@@ -94,6 +94,31 @@ class ESASSHAgent:
         Executes a command and keeps the outpout in the SSHManager buffer, which is also returned.
         """
         return SSHManager.exec_command(command, return_output = True, clear_buffer_before = True)
+
+    def execute_async_command(
+        self, 
+        command: str, 
+        delimiter: str,
+        timeout: float = 5,
+        sleep_time: float = 0.1,
+        buffer_size: int = 4096,
+    ) -> str:
+        """
+        @param {str} command Command to execute.
+        @param {str} delimiter The delimiter of the command prompt.
+        @param {float} timeout The time to wait before raising a timeout exception while expecting a command output (5s by default).
+        @param {float} sleep_time The time to wait between output lectures (0.1s or 100ms by default).
+        @param {int} buffer_size The size of the buffer where the async output is going to be stored (4096 bytes by default).
+
+        Executes an async command and keeps the output in the SSHManager buffer, which is also returned.
+        """
+        # We set the channel properties
+        SSHManager.set_channel_properties(timeout, sleep_time, buffer_size)
+        return SSHManager.exec_async_command(
+            command,
+            terminal_delimiter = delimiter
+        )
+
 
     def execute_cli_command(
         self, 
