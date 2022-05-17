@@ -12,8 +12,7 @@ class ESAStateManager:
     """
     @version 1.4.1
 
-    Container for the ESA state, storing relevant information about it, such as the serial number, tenant
-    id or version number. It also provides methods to set automtically these values from the files managed
+    Container for the ESA state, storing relevant information about it, such as the serial number or version number. It also provides methods to set automtically these values from the files managed
     by ESAFileManager.
     """
 
@@ -38,7 +37,7 @@ class ESAStateManager:
     # Facade
     def set_state_from_files(self):
         """
-        Facade method to set the basic state (serial_number, version_number and tenant_id from files).
+        Facade method to set the basic state (serial_number and version_number from files).
         It first requests the essential files from the ESA file manager, and invoke the methods that 
         retrieve the values from them (making use of the ESA file manager as well, because we do not 
         manage files directly in this class to be SRP compliant)
@@ -48,8 +47,6 @@ class ESAStateManager:
         # We get ESA's serial and version numbers
         self.set_serial_number_from_file()
         self.set_version_number_from_file()
-        # We set the tenant_id value according to the value present in the config file
-        self.set_tenant_id_from_file()
         
     # Methods to set state values
 
@@ -77,20 +74,6 @@ class ESAStateManager:
         Logger.info(f'Version number = { self.version_number }')
         # We validate the version number
         self.__is_valid_version_number()
-
-    def set_tenant_id_from_file(self):
-        """ 
-        Sets the tenant_id value in local state. It obtains this value from ESA's config file using a
-        regular expression.
-        """
-        # We use the ESAFileManager class, to request the value from the ESA config file
-        tenant_id = self.esa_file_manager.get_value_from_file(
-            ESAFileManager.ESA_CONFIG_FILE_NAME, 
-            r'\{"tenant_id":"(.*?)"\}'
-        )
-        # We set the current tenant_id
-        Logger.info(f'ESA tenant_id = [{ tenant_id }]')
-        self.tenant_id = tenant_id
 
     # Validations
 

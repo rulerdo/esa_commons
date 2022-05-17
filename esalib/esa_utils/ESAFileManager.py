@@ -15,21 +15,18 @@ class ESAFileManager:
     to simply retrieve a remote file by its name/path, and anither facade to retrieve values from already
     obtained files via regular expressions.
     The method et_essential_files is a practical wrapper to get all the necessary files to get ESA's basic
-    information (serial number, tenant id and warnings in the logfile).
+    information (serial number and warnings in the logfile).
     """
 
     # File names
     ESA_LOG_FILE_NAME               = 'qlogd_alert_messages.dat'
-    ESA_CONFIG_FILE_NAME            = 'data.cfg.gz'
     ESA_SNMPD_CONF_FILE_NAME        = 'snmpd.conf'
-    __ESA_REFERENCE_FILE_PREFIX     = 'OLD_'
-    ESA_REFERENCE_CONFIG_FILE_NAME  = __ESA_REFERENCE_FILE_PREFIX + ESA_CONFIG_FILE_NAME   
+    __ESA_REFERENCE_FILE_PREFIX     = 'OLD_' 
 
     # File locations
     ESA_LOG_FILE_PATH = '/data/db/' + ESA_LOG_FILE_NAME
     ESA_SNMPD_CONF_PATH = '/data/release/current/etc/' + ESA_SNMPD_CONF_FILE_NAME
-    ESA_CONFIG_DIRECTORY = '/data/db/config/machine/%s/thirdparty.dlp_dg/' 
-    ESA_CONFIG_FILE_PATH = ESA_CONFIG_DIRECTORY + ESA_CONFIG_FILE_NAME
+
 
     def __init__(
         self, 
@@ -45,29 +42,25 @@ class ESAFileManager:
 
     def get_essential_files(self):
         """
-        Retrieves the essential ESA files (SNMPD, config and log files). 
+        Retrieves the essential ESA files (SNMPD and log files). 
         These files are used in almost all the use cases, because we can found the essential information
-        there, like the serial number in SNMPD conf file, or the tenant_id in the conf file, as well as the
-        errors displayed in the log file.
+        there, like the serial number in SNMPD conf file, as well as the errors displayed in the log file.
         """
         # We remove the residual files from previous executions, if any.
         self.remove_essential_files()
         # We retrieve the files
         self.get_snmpd_file()
         self.get_esa_serial_number()
-        self.get_config_file()
         self.get_log_file()
 
     def remove_essential_files(self):
         """
-        Method to remove the essential files (snmpd, conf, log and reference conf (OLD_config)). 
+        Method to remove the essential files (snmpd and log files). 
         This method should be called at the end of the use case, even if - for safety reasons - it is
         automatically called in the get_essential_files method.
         """
         self.safely_remove_file(self.ESA_SNMPD_CONF_FILE_NAME)
-        self.safely_remove_file(self.ESA_CONFIG_FILE_NAME)
         self.safely_remove_file(self.ESA_LOG_FILE_NAME)
-        self.safely_remove_file(self.ESA_REFERENCE_CONFIG_FILE_NAME)
 
     def get_snmpd_file(self):
         """
@@ -76,15 +69,6 @@ class ESAFileManager:
         """
         # We request the file
         self.ssh_agent.get_file_with_scp(self.ESA_SNMPD_CONF_PATH)
-
-    def get_config_file(self):
-        """
-        Retrieves the config file from ESA. This file is useful to get the tenant_id, which will indicate
-        if this field should be updated with the serial number or not.
-        """
-        # We construct the path with the serial number in between and retrieve the file
-        filename = self.ESA_CONFIG_FILE_PATH % self.serial_number
-        self.ssh_agent.get_file_with_scp(filename)
 
     def get_log_file(self):
         """
