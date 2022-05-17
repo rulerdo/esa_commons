@@ -18,6 +18,6 @@ setup(
     zip_safe = False,
     # Dependencies
     install_requires = [
-        'paramiko==2.10.1',
+        'paramiko>=2.10.1',
     ]
 )
