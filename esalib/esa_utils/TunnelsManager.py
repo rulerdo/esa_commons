@@ -15,6 +15,7 @@ class TunnelsManager:
     def initialize(self):
         """Facade to retrieve the SSH parameters and start the connection."""
         self.set_ssh_parameters()
+        self.set_esa_credentials()
         self.start_connection()
 
     def set_ssh_parameters(self):
@@ -46,5 +47,8 @@ class TunnelsManager:
         """Returns the SSH agent."""
         return self.ssh_agent
 
-
-
+    def set_esa_credentials(self):
+        serial_number = input('Enter the ESA serial number: ')
+        seed_id = input('Enter the seed: ')
+        self.credentials = (serial_number, seed_id)
+        self.command_prefix = f'tunnels -L {serial_number} -p {seed_id}'
