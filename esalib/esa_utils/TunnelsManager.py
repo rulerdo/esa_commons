@@ -47,7 +47,7 @@ class TunnelsManager:
         return self.ssh_agent
 
     def set_esa_credentials(self):
-        serial_number = '42248FD45B0E7A7CB8CC-9E00296D739'
-        seed_id = input('Seed for 42248FD45B0E7A7CB8CC-9E00296D739: ')
+        serial_number = '42248FD45B0E7A7CB8CC-9E00296D739F'
+        seed_id = input('Seed for 42248FD45B0E7A7CB8CC-9E00296D739F: ')
         self.credentials = (serial_number, seed_id)
         self.command_prefix = f'tunnels -L {serial_number} -p {seed_id}'
