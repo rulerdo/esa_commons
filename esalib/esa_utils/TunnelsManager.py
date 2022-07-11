@@ -20,9 +20,9 @@ class TunnelsManager:
 
     def set_ssh_parameters(self):
         """Retrieves the parameters for the SSH connection to the Tunnels."""
-        tunnels_ip = 'tunnelsng-access.sv4.ironport.com'
-        tunnels_user = 'aavega'
-        tunnels_password = 'E&m431120_**E&m273214_**'
+        tunnels_ip = '10.89.1.145'
+        tunnels_user = 'dvignaul'
+        tunnels_password = 'cisco123!'
         # We set the custom SSH port if provided
         tunnels_ssh_port = 22
         # We create the SSHParameters object
