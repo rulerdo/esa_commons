@@ -2,3 +2,4 @@ python-dotenv
 paramiko==2.10.1
 click==8.0.1
 scp==0.14.1
+PyYAML==5.4.1
