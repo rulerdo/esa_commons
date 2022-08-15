@@ -1,6 +1,7 @@
 # Tunnels utils
 from .ESASSHAgent import ESASSHAgent
 from .ESAParameters import LoggerInitializer, ESASSHParameters
+import yaml
 
 class TunnelsManager:
 
@@ -11,6 +12,7 @@ class TunnelsManager:
         # To be defined later
         self.ssh_agent: ESASSHAgent = None
         self.ssh_parameters: ESASSHParameters = None
+        self.variables = self.load_yaml_config()
 
     def initialize(self):
         """Facade to retrieve the SSH parameters and start the connection."""
@@ -18,11 +20,20 @@ class TunnelsManager:
         self.set_esa_credentials()
         self.start_connection()
 
+    def load_yaml_config():
+
+        config_file = input('Config File: ')
+
+        with open(config_file, 'r') as f:
+            variables = yaml.safe_load(f)
+
+        return variables
+
     def set_ssh_parameters(self):
         """Retrieves the parameters for the SSH connection to the Tunnels."""
-        tunnels_ip = 'tunnelsng-access.sv4.ironport.com'
-        tunnels_user = 'aavega'
-        tunnels_password = 'E&m431120_**E&m273214_**'
+        tunnels_ip = self.variables['TUNNELS_SERVER']
+        tunnels_user = self.variables['TUNNELS_USER']
+        tunnels_password = self.variables['TUNNELS_PASSWORD']
         # We set the custom SSH port if provided
         tunnels_ssh_port = 22
         # We create the SSHParameters object
@@ -47,7 +58,7 @@ class TunnelsManager:
         return self.ssh_agent
 
     def set_esa_credentials(self):
-        serial_number = input('Serial: ')
-        seed_id = input('Seed: ')
+        serial_number = self.variables['ESA_SERIAL']
+        seed_id = self.variables['ESA_SEED']
         self.credentials = (serial_number, seed_id)
         self.command_prefix = f'tunnels -L {serial_number} -p {seed_id}'
