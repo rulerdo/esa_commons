@@ -20,9 +20,9 @@ class TunnelsManager:
 
     def set_ssh_parameters(self):
         """Retrieves the parameters for the SSH connection to the Tunnels."""
-        tunnels_ip = '10.89.1.145'
-        tunnels_user = 'dvignaul'
-        tunnels_password = 'cisco123!'
+        tunnels_ip = 'tunnelsng-access.sv4.ironport.com'
+        tunnels_user = 'aavega'
+        tunnels_password = 'E&m431120_**E&m273214_**'
         # We set the custom SSH port if provided
         tunnels_ssh_port = 22
         # We create the SSHParameters object
@@ -47,7 +47,7 @@ class TunnelsManager:
         return self.ssh_agent
 
     def set_esa_credentials(self):
-        serial_number = '42248FD45B0E7A7CB8CC-9E00296D739F'
-        seed_id = input('Seed for 42248FD45B0E7A7CB8CC-9E00296D739F: ')
+        serial_number = input('Serial: ')
+        seed_id = input('Seed: ')
         self.credentials = (serial_number, seed_id)
         self.command_prefix = f'tunnels -L {serial_number} -p {seed_id}'
